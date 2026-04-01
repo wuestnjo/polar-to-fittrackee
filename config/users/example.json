@@ -1,0 +1,31 @@
+{
+    "polar_access_token": "###########################",
+    "polar_user_id": 12345678,
+
+    "fittrackee_url": "https://fittrackee.########.###",
+    "fittrackee_email": "#####@####.###",
+    "fittrackee_password": "######",
+    "fittrackee_default_privacy": "followers_only",
+
+    "fittrackee_equipment_ids": {
+        "salomon_speedcross_6": "##############",
+        "ascis_noosa_tri_16": "##############",
+        "truemotion_solo": "##############"
+    },
+
+    "mapping": {
+        "RUNNING": {
+            "sport": "Running",
+            "equipment": ["ascis_noosa_tri_16"]
+        },
+        "CROSS_COUNTRY_RUNNING": {
+            "sport": "Trail",
+            "equipment": ["salomon_speedcross_6"]
+        },
+        "TRACK_AND_FIELD_RUNNING": {
+            "sport": "Running",
+            "equipment": ["truemotion_solo"],
+            "privacy": "private"
+        }
+    }
+}

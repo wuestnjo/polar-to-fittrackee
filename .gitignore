@@ -1,0 +1,9 @@
+config/.env
+
+config/users/*
+!config/users/example.json
+
+data/*
+
+__pycache__
+.venv

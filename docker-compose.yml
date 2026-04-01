@@ -1,0 +1,9 @@
+services:
+  polar2fittrackee:
+    build: .
+    container_name: polar2fittrackee
+    command: ["uv", "run", "sync.py"]
+    volumes:
+      - ./data:/usr/src/app/data
+      - ./config:/usr/src/app/config
+    restart: no

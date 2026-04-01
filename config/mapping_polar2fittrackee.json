@@ -1,0 +1,12 @@
+{
+    "RUNNING": "Running",
+    "CROSS_COUNTRY_RUNNING": "Trail",
+    "TRACK_AND_FIELD_RUNNING": "Running",
+    "HIKING": "Hiking",
+    "ROAD_BIKING": "Cycling (Sport)",
+    "CYCLING": "Cycling (Transport)",
+
+    "SNOWBOARDING": "Skiing (Alpine)",
+    "WATERSPORTS_KAYAKING": "Kayaking (Whitewater)",
+    "OPEN_WATER_SWIMMING": "Kayaking (Whitewater)"
+}
