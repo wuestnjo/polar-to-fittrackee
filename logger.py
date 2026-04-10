@@ -13,20 +13,20 @@ DEBUG = False
 
 def info(user, msg):
     msg = f"{datetime.now()} - {msg}\n"
-    with open(f"./data/{user}/info.log", "w") as f:
+    with open(f"./data/{user}/info.log", "a") as f:
         f.write(msg)
     print(f"INFO: {msg}")
 
 def debug(user, msg):
     if DEBUG:
         msg = f"{datetime.now()} - {msg}\n"
-        with open(f"./data/{user}/debug.log", "w") as f:
+        with open(f"./data/{user}/debug.log", "a") as f:
             f.write(msg)
         print(f"DEBUG: {msg}")
 
 def warn(user, msg):
     msg = f"{datetime.now()} - {msg}\n"
-    with open(f"./data/{user}/warn.log", "w") as f:
+    with open(f"./data/{user}/warn.log", "a") as f:
         f.write(msg)
     print(f"WARN: {msg}")
 
