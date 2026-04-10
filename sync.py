@@ -1,7 +1,7 @@
 import os
 from dotenv import load_dotenv
 import logger as log
-from util import load_user_json
+from util import load_user_json, load_mapping_json
 
 import PolarFlowAPI
 import FitTrackeeAPI
@@ -31,7 +31,6 @@ if __name__ == "__main__":
         ## Collect new Workouts from Polar
         PFC.collect_workouts()
 
-
         ## Setup FitTrackeeClient
         try:
             ft_url = user_config["fittrackee_url"]
@@ -48,30 +47,32 @@ if __name__ == "__main__":
         if not FTC.login():
             break
 
-        mapping = user_config["mapping"]
+        polar_user_mapping = user_config["mapping_polar"]
+        polar_default_mapping = load_mapping_json("polar2fittrackee")
 
-        ## Upload all available files
+
+        ## Upload all available files to Fittrackee
         for fname in os.listdir(user_data_dir):
             if ".tcx" not in fname and ".fit" not in fname:
                 continue
-            else: 
-                # timestamp = fname[0:19]
-                activityType = fname[20:-4]
-                if activityType in mapping.keys():
-                    map = mapping[activityType]
-                else:
-                    map = None
-                    os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/no-mapping/{fname}")
-                    log.info(user, f"SYNC: no mapping for \"{fname[:-4]}\" - skipping")
-                    continue
-                
-                ## Upload Workout to FitTrackee
-                success, ftc_id = FTC.create_workout(f"{user_data_dir}/{fname}", map)
-                if success:
-                    os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/archive/{fname}")
-                    log.info(user, f"{ftc_id} \"{fname[:-4]}\" - {map}")
-                else:
-                    os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/failed/{fname}")
-                    log.info(user, f"upload of {fname[:-4]} failed")
+
+            polar_activity_type = fname[20:-4]  # ([0:19] is timestamp)
+            if polar_activity_type in polar_user_mapping.keys():
+                map = polar_user_mapping[polar_activity_type]
+            elif polar_activity_type in polar_default_mapping.keys():
+                map = polar_default_mapping[polar_activity_type]
+            else:
+                os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/no-mapping/{fname}")
+                log.info(user, f"SYNC: no mapping for \"{fname[:-4]}\" - skipping")
+                continue
+            
+            ## Upload Workout to FitTrackee
+            success, ftc_id = FTC.create_workout(f"{user_data_dir}/{fname}", map)
+            if success:
+                os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/archive/{fname}")
+                log.info(user, f"{ftc_id} \"{fname[:-4]}\" - {map}")
+            else:
+                # os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/failed/{fname}")
+                log.info(user, f"upload of {fname[:-4]} failed")
 
         FTC.logout()

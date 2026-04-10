@@ -2,10 +2,37 @@ import requests
 import json 
 import os
 import logger as log
-from util import load_mapping_json
 
 # https://github.com/SamR1/FitTrackee
 # https://docs.fittrackee.org/en/api/index.html
+
+FTC_IDS = {
+    "Canoeing": 20,
+    "Canoeing (Whitewater)": 26,
+    "Cycling (Sport)": 1,
+    "Cycling (Transport)": 2,
+    "Cycling (Trekking)": 17,
+    "Cycling (Virtual)": 13,
+    "Halfbike": 21,
+    "Hiking": 3,
+    "Kayaking": 19,
+    "Kayaking (Whitewater)": 27,
+    "Mountain Biking": 4,
+    "Mountain Biking (Electric)": 7,
+    "Mountaineering": 14,
+    "Open Water Swimming": 16,
+    "Paragliding": 15,
+    "Rowing": 11,
+    "Running": 5,
+    "Skiing (Alpine)": 9,
+    "Skiing (Cross Country)": 10,
+    "Snowshoes": 12,
+    "Standup Paddleboarding": 23,
+    "Swimrun": 18,
+    "Trail": 8,
+    "Walking": 6,
+    "Windsurfing": 22
+}
 
 class Client():
 
@@ -16,8 +43,6 @@ class Client():
         self.ft_password = ft_password
         self.equipment_ids = ft_equipment_ids
         self.auth_token = None
-        self.fittrackee2id = load_mapping_json("fittrackee2id")
-        self.polar2fittrackee = load_mapping_json("polar2fittrackee")
         self.default_privacy = ft_default_privacy
 
     def login(self):
@@ -54,13 +79,6 @@ class Client():
     
     def create_workout(self, file_path, mapping):
         # https://docs.fittrackee.org/en/api/workouts.html
-
-        # determine sport_type -- prefer user config and fall back to default mapping
-        try:
-            sport_type = mapping["sport"]
-        except KeyError:
-            sport_type = self.polar2fittrackee["sport"]
-
         try:
             with open(file_path, 'rb') as workout_file:
                 response = requests.post(f'{self.ft_url}/api/workouts',
@@ -75,7 +93,7 @@ class Client():
                     data = {
                         'data': json.dumps(
                             {
-                                "sport_id": self.fittrackee2id[sport_type],
+                                "sport_id": FTC_IDS[mapping["sport"]],
                                 "notes": "", 
                                 "description": "", 
                                 "title": mapping.get("title", ""),  
