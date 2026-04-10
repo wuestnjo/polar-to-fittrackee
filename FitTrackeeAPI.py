@@ -97,7 +97,7 @@ class Client():
                                 "notes": "", 
                                 "description": "", 
                                 "title": mapping.get("title", ""),  
-                                "equipment_ids": [self.equipment_ids[x] for x in mapping["equipment"]], 
+                                "equipment_ids": [self.equipment_ids[x] for x in mapping.get("equipment", [])], 
                                 "workout_visibility": mapping.get("privacy", self.default_privacy), 
                                 "analysis_visibility": mapping.get("privacy", self.default_privacy),
                                 "map_visibility": mapping.get("privacy", self.default_privacy)
