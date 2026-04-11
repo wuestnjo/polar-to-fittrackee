@@ -31,29 +31,6 @@ if __name__ == "__main__":
         ## Collect new Workouts from Polar
         PFC.collect_workouts()
 
-
-
-        ## TODO Add Garmin downloader
-        ## -> TODO somehow tag s.t. different mapping works.
-        ## -> separate folders? tags in name?
-
-        # ## Setup IntervalsClient (if defined in user config)
-        # try:
-        #     iicu_user = user_config["intervalsicu_user"]
-        #     iicu_password = user_config["intervalsicu_user"]
-        # except KeyError:
-        #     pass
-
-        # TODO Add IntervalsICU uploader
-        # IICU = IntervalsAPI.Client(user, iicu_user, iicu_password)
-        # if IICU.login():
-            
-        #     # upload INDOORCYCLING and         
-        #     # upload ROAD_BIKING 
-        #     # - according to config 
-
-        #     # move to folder /intervalsicu
-
         ## Setup FitTrackeeClient
         try:
             ft_url = user_config["fittrackee_url"]
