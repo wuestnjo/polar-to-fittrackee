@@ -22,7 +22,7 @@ To setup the `polar_access_token` and `polar_user_id` follow the instructions on
 
 
 ## Run
-To run the script one; `uv run sync.py`
+To run the script once; `uv run sync.py`
 
 Run with docker compose: `docker compose up`
 
