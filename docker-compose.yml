@@ -1,7 +1,7 @@
 services:
-  polar2fittrackee:
+  polar-to-fittrackee:
     build: .
-    container_name: polar2fittrackee
+    container_name: polar-to-fittrackee
     command: ["uv", "run", "sync.py"]
     volumes:
       - ./data:/usr/src/app/data
