@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     load_dotenv("./config/.env")
 
-    for user in [u.replace(".json","") for u in os.listdir("./config/users") if u != "example.json"]:
+    for user in [u.replace(".json","") for u in os.listdir("./config/users") if u != "example"]:
 
         ## Create user_data_dir if not existing already
         os.makedirs("./data", exist_ok=True)
