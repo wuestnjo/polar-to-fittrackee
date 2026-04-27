@@ -67,8 +67,9 @@ if __name__ == "__main__":
             ## Upload Workout to FitTrackee
             success, ftc_id = FTC.create_workout(f"{user_data_dir}/{fname}", map)
             if success:
-                os.makedirs(f"{user_data_dir}/archive", exist_ok=True)
-                os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/archive/{fname}")
+                # os.makedirs(f"{user_data_dir}/archive", exist_ok=True)
+                # os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/archive/{fname}")
+                os.remove(f"{user_data_dir}/{fname}")
                 log.info(user, f"{ftc_id} \"{fname[:-4]}\" - {map}")
             else:
                 os.makedirs(f"{user_data_dir}/failed", exist_ok=True)
