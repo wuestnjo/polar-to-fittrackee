@@ -16,9 +16,6 @@ if __name__ == "__main__":
         os.makedirs("./data", exist_ok=True)
         user_data_dir = f"./data/{user}"
         os.makedirs(user_data_dir, exist_ok=True)
-        os.makedirs(f"{user_data_dir}/archive", exist_ok=True)
-        os.makedirs(f"{user_data_dir}/failed", exist_ok=True)
-        os.makedirs(f"{user_data_dir}/no-mapping", exist_ok=True)
 
         ## Load user config
         user_config = load_user_json(user)
@@ -62,6 +59,7 @@ if __name__ == "__main__":
             elif polar_activity_type in polar_default_mapping.keys():
                 map = polar_default_mapping[polar_activity_type]
             else:
+                os.makedirs(f"{user_data_dir}/no-mapping", exist_ok=True)
                 os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/no-mapping/{fname}")
                 log.info(user, f"SYNC: no mapping for \"{fname[:-4]}\" - skipping")
                 continue
@@ -69,9 +67,11 @@ if __name__ == "__main__":
             ## Upload Workout to FitTrackee
             success, ftc_id = FTC.create_workout(f"{user_data_dir}/{fname}", map)
             if success:
+                os.makedirs(f"{user_data_dir}/archive", exist_ok=True)
                 os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/archive/{fname}")
                 log.info(user, f"{ftc_id} \"{fname[:-4]}\" - {map}")
             else:
+                os.makedirs(f"{user_data_dir}/failed", exist_ok=True)
                 os.rename(f"{user_data_dir}/{fname}", f"{user_data_dir}/failed/{fname}")
                 log.info(user, f"upload of {fname[:-4]} failed")
 
