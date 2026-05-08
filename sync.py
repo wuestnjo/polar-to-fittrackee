@@ -10,7 +10,7 @@ if __name__ == "__main__":
 
     load_dotenv("./config/.env")
 
-    for user in [u.replace(".json","") for u in os.listdir("./config/users") if u != "example"]:
+    for user in [u.replace(".json","") for u in os.listdir("./config/users") if u != "example.json"]:
 
         ## Create user_data_dir if not existing already
         os.makedirs("./data", exist_ok=True)
@@ -42,7 +42,7 @@ if __name__ == "__main__":
 
         FTC = FitTrackeeAPI.Client(user, ft_url, ft_email, ft_password, ft_equipment_ids, ft_default_privacy)
         if not FTC.login():
-            break
+            continue
 
         polar_user_mapping = user_config["mapping_polar"]
         polar_default_mapping = load_mapping_json("polar2fittrackee")
