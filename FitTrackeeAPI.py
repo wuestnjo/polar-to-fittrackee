@@ -42,18 +42,22 @@ class Client():
         self.ft_email = ft_email
         self.ft_password = ft_password
         self.equipment_ids = ft_equipment_ids
-        self.auth_token = None
+        self.session = requests.Session()
         self.default_privacy = ft_default_privacy
 
     def login(self):
         # https://docs.fittrackee.org/en/api/auth.html
         credentials = {"email": self.ft_email, "password": self.ft_password}
         try:
-            response = requests.post(f'{self.ft_url}/api/auth/login', json=credentials)
+            # The token is no longer part of the response body. FitTrackee sets it as
+            # 'access_token_cookie' (+ 'csrf_access_token'), which the session keeps.
+            response = self.session.post(f'{self.ft_url}/api/auth/login', json=credentials, timeout=10)
             response.raise_for_status()  # Raise an exception for HTTP errors (4xx or 5xx)
             log.debug(self.username, f"FTC - Login successful! Status Code: {response.status_code}")
             log.debug(self.username, f"FTC - Response JSON: {response.json()}")
-            self.auth_token = response.json()['auth_token']
+            if 'access_token_cookie' not in self.session.cookies:
+                log.debug(self.username, "FTC - Login response did not set an access token cookie")
+                return False
             return True
         except requests.exceptions.HTTPError as e:
             log.debug(self.username, f"FTC - HTTP Error during login: {e}")
@@ -62,11 +66,17 @@ class Client():
             log.debug(self.username, f"FTC - An error occurred during the request: {e}")
         return False
 
+    def _auth_headers(self):
+        # Cookie based auth (no 'Authorization' header, that one is reserved for OAuth2 tokens).
+        # State changing requests must echo the CSRF cookie. Read it per request, since
+        # FitTrackee refreshes the cookies shortly before the token expires.
+        return {'X-CSRF-TOKEN': self.session.cookies.get('csrf_access_token', '')}
+
     def logout(self):
         # https://docs.fittrackee.org/en/api/auth.html
         try:
-            response = requests.post(f'{self.ft_url}/api/auth/logout',
-                        headers = {'Authorization': f'Bearer {self.auth_token}'},
+            response = self.session.post(f'{self.ft_url}/api/auth/logout',
+                        headers = self._auth_headers(),
                         timeout=10)
             response.raise_for_status()
             return True
@@ -81,8 +91,8 @@ class Client():
         # https://docs.fittrackee.org/en/api/workouts.html
         try:
             with open(file_path, 'rb') as workout_file:
-                response = requests.post(f'{self.ft_url}/api/workouts',
-                    headers = {'Authorization': f'Bearer {self.auth_token}'},
+                response = self.session.post(f'{self.ft_url}/api/workouts',
+                    headers = self._auth_headers(),
                     files = {
                         'file': (
                             os.path.basename(file_path), 
